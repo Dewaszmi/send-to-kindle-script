@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+# get smtp credentials from another file
+CRED_FILE="$HOME/.config/send-to-kindle/kindle_credentials.sh"
+if [[ -f "$CRED_FILE" ]]; then
+    source "$CRED_FILE"
+else
+    echo "Missing credentials file: $CRED_FILE"
+    exit 1
+fi
+
+clb_sender_mail="$sender_mail"
+clb_kindle_mail="$kindle_mail"
+clb_username="$username"
+clb_password="$password"
+
+# uses gmail server with SSL by default
+relay="smtp.gmail.com"
+port="465"
+encryption="SSL"
+
+
+language=""
+books=()
+new_books=()
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -l)
+            shift
+            if [[ -z "$1" || "$1" =~ ^- ]]; then
+                echo 'Usage: "-l [language_code]"'
+                exit 1
+            fi
+            language="$1"
+            ;;
+        -*)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+        *)
+            if [[ -f "$1" ]]; then
+                ext="${1##*.}"
+                out="${1%.*}.epub"
+                if [[ "$ext" != "epub" ]]; then
+                    ebook-convert "$1" "$out"
+                    new_books+=("$out")
+                fi
+                if [[ -n "$language" ]]; then
+                    ebook-meta "$out" -l "$language"
+                fi
+                books+=("$out")
+            else
+                echo "No file $1."
+            fi
+            ;;
+    esac
+    shift
+done
+
+
+for book in "${books[@]}"; do
+    cmd="calibre-smtp \
+        --relay \"$relay\" --port \"$port\" --encryption \"$encryption\" \
+        --username \"$clb_username\" --password \"$clb_password\" \
+        --attachment \"$book\" --subject \"Send to Kindle: $book\" \
+        \"$clb_sender_mail\" \"$clb_kindle_mail\" \"Happy reading :)\""
+
+    eval "$cmd"
+
+    if [ $? -eq 0 ]; then
+        echo "\"$book\" sent successfully."
+    else
+        echo "Failed to send \"$book\"."
+    fi
+
+    for new in "${new_books[@]}"; do
+        if [[ "$book" == "$new" ]]; then
+            rm "$book"
+            break
+        fi
+    done
+done
