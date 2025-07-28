@@ -2,7 +2,9 @@
 
 *<small>Running this saves you about 2 lines of code so probably not that useful but if it helps your fingers then it can't be bad</small>*
 
-Requires [Calibre](https://calibre-ebook.com/download_linux)
+Requirements:
+Docker (with the user added to docker group)
+secret-tool for credentials encryption
 
 Arguments are files to be sent and optionally "-l", accepts most of the common ebook formats and converts them to .epub, which then get converted by Amazon to their format (currently it's .kfx for newer Kindles i think, older models use .mobi)
 
@@ -14,7 +16,7 @@ Uses Google's SMTP server with SSL encryption by default
 
 curl -s https://raw.githubusercontent.com/Dewaszmi/send-to-kindle-script/main/INSTALL.sh | bash
 
-Then go to $HOME/.config/send-to-kindle and paste your SMTP credentials to the kindle_credentials.sh file
+Make sure that $HOME/.local/bin is included in your path
 
 ### Usage
 

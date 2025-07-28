@@ -1,24 +1,15 @@
 #!/usr/bin/env bash
 
-# get smtp credentials from another file
-CRED_FILE="$HOME/.config/send-to-kindle/kindle_credentials.sh"
-if [[ -f "$CRED_FILE" ]]; then
-    source "$CRED_FILE"
-else
-    echo "Missing credentials file: $CRED_FILE"
+# Check if credentials were retrieved successfully
+if [[ -z "$SENDER_MAIL" || -z "$KINDLE_MAIL" || -z "$USERNAME" || -z "$PASSWORD" ]]; then
+    echo "Error: Failed to retrieve credentials from the keyring."
     exit 1
 fi
 
-clb_sender_mail="$sender_mail"
-clb_kindle_mail="$kindle_mail"
-clb_username="$username"
-clb_password="$password"
-
-# uses gmail server with SSL by default
+# Uses gmail server with SSL by default
 relay="smtp.gmail.com"
 port="465"
 encryption="SSL"
-
 
 language=""
 books=()
@@ -58,13 +49,12 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-
 for book in "${books[@]}"; do
     cmd="calibre-smtp \
         --relay \"$relay\" --port \"$port\" --encryption \"$encryption\" \
-        --username \"$clb_username\" --password \"$clb_password\" \
+        --username \"$USERNAME\" --password \"$PASSWORD\" \
         --attachment \"$book\" --subject \"Send to Kindle: $book\" \
-        \"$clb_sender_mail\" \"$clb_kindle_mail\" \"Happy reading :)\""
+        \"$SENDER_MAIL\" \"$KINDLE_MAIL\" \"Happy reading :)\""
 
     eval "$cmd"
 
