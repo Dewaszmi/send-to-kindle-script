@@ -2,9 +2,7 @@
 
 *<small>Running this saves you about 2 lines of code so probably not that useful but if it helps your fingers then it can't be bad</small>*
 
-Requirements:
-Docker (with the user added to docker group)
-secret-tool for credentials encryption
+Requirements are [Calibre](https://calibre-ebook.com/download_linux) and [secret-tool](https://manpages.ubuntu.com/manpages/focal/man1/secret-tool.1.html)
 
 Arguments are files to be sent and optionally "-l", accepts most of the common ebook formats and converts them to .epub, which then get converted by Amazon to their format (currently it's .kfx for newer Kindles i think, older models use .mobi)
 
