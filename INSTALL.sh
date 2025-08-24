@@ -41,6 +41,7 @@ chmod +x "$HOME/.local/bin"
 
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
     echo "$HOME/.local/bin not included in PATH, please update accordingly"
+    exit 1
 fi
 
 echo "Installation succesfull."

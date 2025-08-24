@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-$SENDER_MAIL=$(secret-tool lookup send-to-kindle sender_mail)
-$KINDLE_MAIL=$(secret-tool lookup send-to-kindle kindle_mail)
-$USERNAME=$(secret-tool lookup send-to-kindle username)
-$PASSWORD=$(secret-tool lookup send-to-kindle password)
+SENDER_MAIL=$(secret-tool lookup send-to-kindle sender_mail)
+KINDLE_MAIL=$(secret-tool lookup send-to-kindle kindle_mail)
+USERNAME=$(secret-tool lookup send-to-kindle username)
+PASSWORD=$(secret-tool lookup send-to-kindle password)
 
 if [[ -z "$SENDER_MAIL" || -z "$KINDLE_MAIL" || -z "$USERNAME" || -z "$PASSWORD" ]]; then
     echo "Error: Failed to retrieve credentials from the keyring."
